@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-900">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitRank - Level Up In Real Life</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Canvas Confetti Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- Custom Google Fonts: Fredoka + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            fredoka: ['Fredoka', 'sans-serif'],
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            arcade: {
+              green: '#22C55E',
+              coral: '#FF4757',
+              blue: '#00A8FF',
+              yellow: '#FFC048',
+              purple: '#A855F7',
+              goat: '#FF007A',
+              dark: '#0F172A'
+            }
+          },
+          boxShadow: {
+            'arcade': '0px 5px 0px #0F172A',
+            'arcade-sm': '0px 3px 0px #0F172A',
+            'arcade-lg': '0px 8px 0px #0F172A',
+            'arcade-glow': '0px 0px 22px rgba(34, 197, 94, 0.7)',
+            'goat-glow': '0px 0px 25px rgba(255, 0, 122, 0.8)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Arcade Aesthetic Styling */
+    body {
+      font-family: 'Fredoka', 'Inter', sans-serif;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Screen Shake Animation on Big Events */
+    .shake-animation {
+      animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    @keyframes shake {
+      10%, 90% { transform: translate3d(-2px, 0, 0); }
+      20%, 80% { transform: translate3d(4px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+      40%, 60% { transform: translate3d(6px, 0, 0); }
+    }
+
+    /* Dynamic Laser Scan Effect */
+    .laser-line {
+      height: 4px;
+      background: linear-gradient(90deg, rgba(34,197,94,0) 0%, #22C55E 50%, rgba(34,197,94,0) 100%);
+      box-shadow: 0 0 15px #22C55E;
+      animation: scan 2s infinite ease-in-out;
+    }
+
+    @keyframes scan {
+      0% { top: 10%; }
+      50% { top: 85%; }
+      100% { top: 10%; }
+    }
+
+    /* Rainbow Pass Border Animation */
+    .pass-rainbow-border {
+      background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6dba82);
+      background-size: 300% 300%;
+      animation: rainbowGlow 3s ease infinite;
+    }
+
+    /* GOAT Status Animated Aura */
+    .goat-rainbow-aura {
+      background: linear-gradient(90deg, #ff007a, #7928ca, #00dfd8, #ff007a);
+      background-size: 200% 200%;
+      animation: rainbowGlow 2s linear infinite;
+    }
+
+    @keyframes rainbowGlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F1F5F9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body class="h-full bg-slate-900 flex justify-center items-center p-0 sm:p-4 text-slate-800">
+
+  <!-- MAIN CONTAINER (Mobile Frame Wrapper) -->
+  <div id="appContainer" class="w-full max-w-md h-full sm:h-[92vh] sm:max-h-[920px] bg-slate-50 sm:rounded-[36px] border-0 sm:border-8 border-slate-900 shadow-2xl flex flex-col overflow-hidden relative">
+
+    <!-- TOP APP HEADER -->
+    <header class="bg-slate-900 text-white px-4 py-3 flex items-center justify-between border-b-4 border-slate-900 z-20 shrink-0">
+      <div class="flex items-center space-x-2">
+        <div class="w-9 h-9 rounded-xl bg-arcade-green flex items-center justify-center border-2 border-slate-900 shadow-arcade-sm text-slate-900 font-black text-xl">
+          <i class="fa-solid fa-bolt"></i>
+        </div>
+        <div>
+          <h1 class="font-black text-xl tracking-wider leading-none text-white">FIT<span class="text-arcade-green">RANK</span></h1>
+          <span class="text-[10px] font-bold text-slate-400 tracking-wider">SEASON 1 • ATHLETE NETWORK</span>
+        </div>
+      </div>
+
+      <!-- FitRank Pass Subscription Toggle -->
+      <div class="flex items-center space-x-2">
+        <button id="passToggleBtn" onclick="toggleFitRankPass()" class="px-3 py-1 rounded-full text-xs font-black border-2 border-slate-900 transition-all flex items-center gap-1.5 bg-slate-800 text-slate-300">
+          <i class="fa-solid fa-crown text-yellow-400"></i>
+          <span id="passStatusText">PASS OFF</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN SCROLLABLE VIEW CONTAINER -->
+    <main id="mainContent" class="flex-1 overflow-y-auto pb-28 relative bg-slate-100">
+
+      <!-- ======================================================== -->
+      <!-- TAB 1: HUB / HOME VIEW                                   -->
+      <!-- ======================================================== -->
+      <section id="tab-hub" class="p-4 space-y-4">
+        
+        <!-- User Rank Card Header -->
+        <div id="rankCardWrapper" class="relative p-1 rounded-3xl bg-slate-900 border-4 border-slate-900 shadow-arcade transition-all duration-300">
+          <div class="bg-slate-800 rounded-[22px] p-4 text-white relative overflow-hidden">
+            <!-- Background Rank Pattern -->
+            <div class="absolute -right-6 -bottom-6 opacity-10 text-9xl font-black text-white pointer-events-none">
+              <i id="bgRankIcon" class="fa-solid fa-shield-halved"></i>
+            </div>
+
+            <!-- Pass Multiplier Pill -->
+            <div id="passMultiplierBadge" class="hidden absolute top-3 right-3 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-black text-[10px] px-2.5 py-0.5 rounded-full border border-slate-900 shadow-sm flex items-center gap-1">
+              <i class="fa-solid fa-bolt"></i> 1.25x PASS BOOST
+            </div>
+
+            <div class="flex items-center space-x-4">
+              <!-- Avatar Rank Emblem -->
+              <div class="relative">
+                <div id="rankEmblemBg" class="w-20 h-20 rounded-2xl bg-gradient-to-br from-slate-400 to-slate-600 border-4 border-slate-900 shadow-arcade-sm flex items-center justify-center text-3xl text-white">
+                  <i id="rankIcon" class="fa-solid fa-shield"></i>
+                </div>
+                <div id="levelBadge" class="absolute -bottom-2 -right-2 bg-arcade-yellow text-slate-900 font-black text-xs px-2 py-0.5 rounded-full border-2 border-slate-900">
+                  LVL 14
+                </div>
+              </div>
+
+              <!-- User Info & Rank Titles -->
+              <div class="flex-1">
+                <div class="flex items-center gap-2">
+                  <h2 id="userNameText" class="font-black text-lg text-white">@Alex_Fit</h2>
+                  <span id="rankBadgePill" class="text-[10px] font-black px-2 py-0.5 rounded-md bg-slate-700 text-slate-200 border border-slate-600">SILVER</span>
+                </div>
+                <p id="rankSubText" class="text-xs text-slate-400 font-semibold mt-0.5">Top 18% Athlete in PJ</p>
+
+                <!-- RP Progress Bar -->
+                <div class="mt-3 space-y-1">
+                  <div class="flex justify-between text-xs font-bold">
+                    <span class="text-slate-300">Seasonal Rank (RP)</span>
+                    <span class="text-arcade-green"><span id="currentRpText">850</span> / <span id="nextRankRpText">1500</span> RP</span>
+                  </div>
+                  <div class="w-full h-3.5 bg-slate-900 rounded-full border-2 border-slate-700 p-0.5 overflow-hidden">
+                    <div id="rpProgressBar" class="h-full bg-gradient-to-r from-emerald-400 to-arcade-green rounded-full transition-all duration-500" style="width: 56.6%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Active Squad Multiplier Banner inside Rank Card -->
+            <div class="mt-3 pt-3 border-t border-slate-700/60 flex items-center justify-between text-xs">
+              <span class="text-slate-300 font-bold flex items-center gap-1.5">
+                <i class="fa-solid fa-users text-arcade-blue"></i> Squad Multiplier: <span id="dashSquadMultText" class="text-arcade-yellow font-black">1.0x (Solo)</span>
+              </span>
+              
+              <button onclick="addPoints(1500, 2000)" class="text-[10px] font-black bg-slate-700 hover:bg-slate-600 text-arcade-yellow px-2 py-1 rounded-lg border border-slate-600 active:translate-y-0.5">
+                ⚡ +1.5k RP (Test)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Weekly Streak Tracker -->
+        <div class="bg-white rounded-2xl border-4 border-slate-900 p-3.5 shadow-arcade flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-orange-100 border-2 border-slate-900 flex items-center justify-center text-2xl text-orange-500 font-black">
+              <i class="fa-solid fa-fire animate-bounce"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-1">
+                <span id="streakCountText" class="font-black text-base text-slate-900">5 DAY STREAK!</span>
+              </div>
+              <p class="text-xs text-slate-500 font-bold">Keep burning for +300 RP Sunday Bonus</p>
+            </div>
+          </div>
+
+          <div class="flex gap-1" id="streakDaysContainer">
+            <!-- Days rendered via JS -->
+          </div>
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- VENUE NETWORK LIBRARY (DASHBOARD SECTION)              -->
+        <!-- ====================================================== -->
+        <div class="bg-white rounded-3xl border-4 border-slate-900 p-4 shadow-arcade space-y-3">
+          <div class="flex justify-between items-center">
+            <div>
+              <h3 class="font-black text-slate-900 text-base flex items-center gap-2">
+                <i class="fa-solid fa-location-dot text-arcade-coral"></i> FITNESS NETWORK
+              </h3>
+              <p class="text-xs text-slate-500 font-bold">Scan entrance QR codes to gather points</p>
+            </div>
+            <button onclick="switchTab('network')" class="text-xs font-black text-arcade-blue hover:underline">
+              VIEW ALL
+            </button>
+          </div>
+
+          <!-- Category Filter Chips -->
+          <div class="flex gap-1.5 overflow-x-auto pb-1 text-xs" id="dashCategoryFilters">
+            <button onclick="filterDashVenues('all')" class="dash-cat-btn px-3 py-1 rounded-xl bg-slate-900 text-white font-black border-2 border-slate-900">All</button>
+            <button onclick="filterDashVenues('park')" class="dash-cat-btn px-3 py-1 rounded-xl bg-slate-100 text-slate-700 font-bold border-2 border-slate-300">Parks</button>
+            <button onclick="filterDashVenues('badminton')" class="dash-cat-btn px-3 py-1 rounded-xl bg-slate-100 text-slate-700 font-bold border-2 border-slate-300">Badminton</button>
+            <button onclick="filterDashVenues('pickleball')" class="dash-cat-btn px-3 py-1 rounded-xl bg-slate-100 text-slate-700 font-bold border-2 border-slate-300">Pickleball</button>
+            <button onclick="filterDashVenues('gym')" class="dash-cat-btn px-3 py-1 rounded-xl bg-slate-100 text-slate-700 font-bold border-2 border-slate-300">Gyms</button>
+          </div>
+
+          <!-- Venue Cards Grid -->
+          <div class="space-y-3" id="dashVenueList">
+            <!-- Rendered dynamically in JS -->
+          </div>
+        </div>
+
+        <!-- Active Workout Session Timer -->
+        <div class="bg-white rounded-2xl border-4 border-slate-900 p-4 shadow-arcade space-y-3">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-red-500 animate-ping"></span>
+              <h3 class="font-black text-slate-900 text-sm tracking-wide uppercase">ACTIVE WORKOUT TIMER</h3>
+            </div>
+            <span class="text-xs font-bold px-2 py-0.5 rounded bg-blue-100 text-arcade-blue border border-blue-200">+2 RP / MIN</span>
+          </div>
+
+          <div class="flex items-center justify-between bg-slate-100 p-3 rounded-xl border-2 border-slate-900">
+            <div>
+              <div id="workoutTimerDisplay" class="font-black text-2xl text-slate-900 tracking-wider font-mono">00:00:00</div>
+              <p class="text-[11px] text-slate-500 font-bold">Earned Session RP: <span id="workoutEarnedRp" class="text-arcade-green font-black">+0 RP</span></p>
+            </div>
+
+            <div class="flex gap-2">
+              <button id="timerToggleBtn" onclick="toggleWorkoutTimer()" class="w-10 h-10 rounded-xl bg-arcade-blue text-white font-black border-2 border-slate-900 shadow-arcade-sm active:translate-y-0.5 transition flex items-center justify-center">
+                <i id="timerToggleIcon" class="fa-solid fa-play"></i>
+              </button>
+              <button onclick="finishWorkoutTimer()" class="px-3 h-10 rounded-xl bg-slate-900 text-white font-black text-xs border-2 border-slate-900 shadow-arcade-sm active:translate-y-0.5 transition">
+                CLAIM
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- TAB 2: VENUE NETWORK DIRECTORY                           -->
+      <!-- ======================================================== -->
+      <section id="tab-network" class="hidden p-4 space-y-4">
+        <div class="bg-white p-4 rounded-2xl border-4 border-slate-900 shadow-arcade">
+          <h2 class="font-black text-slate-900 text-lg">FITNESS NETWORK DIRECTORY</h2>
+          <p class="text-xs text-slate-500 font-bold">Scan QR codes at entrance doors or court posts to check-in</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400"></i>
+          <input type="text" id="networkSearchInput" oninput="renderFullNetworkList()" placeholder="Search gym, badminton, pickleball, park..." class="w-full pl-10 pr-4 py-2.5 bg-white rounded-2xl border-4 border-slate-900 font-bold text-xs text-slate-800 placeholder-slate-400 shadow-arcade" />
+        </div>
+
+        <!-- Full Network List -->
+        <div class="space-y-3" id="fullNetworkList">
+          <!-- Rendered via JS -->
+        </div>
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- TAB 3: SQUAD & TEAMMATE QR SCANNER                       -->
+      <!-- ======================================================== -->
+      <section id="tab-squad" class="hidden p-4 space-y-4">
+        <div class="bg-white p-4 rounded-2xl border-4 border-slate-900 shadow-arcade space-y-2">
+          <div class="flex justify-between items-center">
+            <h2 class="font-black text-slate-900 text-lg flex items-center gap-2">
+              <i class="fa-solid fa-users text-arcade-purple"></i> SQUAD LOBBY
+            </h2>
+            <span id="squadMultiplierBadge" class="bg-arcade-yellow text-slate-900 text-xs font-black px-3 py-1 rounded-xl border-2 border-slate-900 shadow-arcade-sm">
+              1.0x SOLO
+            </span>
+          </div>
+          <p class="text-xs text-slate-500 font-bold">Scan your friends' Unique Player QR codes to form a party & boost points!</p>
+        </div>
+
+        <!-- Multiplier Boost Meter Card -->
+        <div class="bg-slate-900 text-white p-4 rounded-3xl border-4 border-slate-900 shadow-arcade space-y-3">
+          <div class="flex justify-between items-center text-xs font-bold">
+            <span class="text-slate-300">SQUAD SIZE BOOST:</span>
+            <span id="squadBoostLabel" class="text-arcade-green font-black">1.0x Multiplier Active</span>
+          </div>
+
+          <div class="grid grid-cols-4 gap-1.5 text-center text-[10px] font-black">
+            <div id="boostStep-1" class="p-2 rounded-xl bg-arcade-green text-slate-900 border-2 border-slate-900">
+              1 Player<br>1.0x
+            </div>
+            <div id="boostStep-2" class="p-2 rounded-xl bg-slate-800 text-slate-400 border-2 border-slate-700">
+              2 Players<br>1.25x Duo
+            </div>
+            <div id="boostStep-3" class="p-2 rounded-xl bg-slate-800 text-slate-400 border-2 border-slate-700">
+              3 Players<br>1.35x Trio
+            </div>
+            <div id="boostStep-4" class="p-2 rounded-xl bg-slate-800 text-slate-400 border-2 border-slate-700">
+              4 Players<br>1.50x Squad
+            </div>
+          </div>
+
+          <button onclick="openTeammateScannerModal()" class="w-full py-3 bg-arcade-purple hover:bg-purple-600 text-white font-black text-xs rounded-2xl border-2 border-slate-900 shadow-arcade-sm active:translate-y-0.5 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-qrcode text-base"></i> SCAN TEAMMATE'S PLAYER QR
+          </button>
+        </div>
+
+        <!-- Current Active Squad Members -->
+        <div class="bg-white p-4 rounded-2xl border-4 border-slate-900 shadow-arcade space-y-3">
+          <div class="flex justify-between items-center">
+            <h3 class="font-black text-slate-900 text-sm">ACTIVE SQUAD MEMBERS (<span id="squadCountText">1/4</span>)</h3>
+            <button onclick="resetSquad()" class="text-xs font-black text-red-500 hover:underline">LEAVE SQUAD</button>
+          </div>
+
+          <div class="space-y-2" id="squadMemberList">
+            <!-- Members rendered via JS -->
+          </div>
+        </div>
+
+        <!-- Simulate Quick Teammate Scans -->
+        <div class="bg-white p-4 rounded-2xl border-4 border-slate-900 shadow-arcade space-y-3">
+          <h3 class="font-black text-slate-900 text-sm">TEST SIMULATE TEAMMATE SCANS</h3>
+          <p class="text-xs text-slate-500 font-bold">Tap a player below to simulate scanning their unique player QR code:</p>
+
+          <div class="grid grid-cols-1 gap-2" id="quickTeammateScanButtons">
+            <!-- Buttons generated in JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- TAB 4: PROFILE & ACTIVITY HISTORY LOG                    -->
+      <!-- ======================================================== -->
+      <section id="tab-profile" class="hidden p-4 space-y-4">
+        
+        <!-- User Profile Header -->
+        <div class="bg-slate-900 text-white p-4 rounded-3xl border-4 border-slate-900 shadow-arcade space-y-3">
+          <div class="flex items-center space-x-4">
+            <div class="relative">
+              <div id="profileRankEmblem" class="w-20 h-20 rounded-2xl bg-gradient-to-br from-slate-400 to-slate-600 border-4 border-slate-900 shadow-arcade-sm flex items-center justify-center text-3xl text-white">
+                <i id="profileRankIcon" class="fa-solid fa-shield"></i>
+              </div>
+              <div class="absolute -bottom-2 -right-2 bg-arcade-yellow text-slate-900 font-black text-xs px-2 py-0.5 rounded-full border-2 border-slate-900">
+                LVL 14
+              </div>
+            </div>
+
+            <div class="flex-1">
+              <div class="flex items-center gap-2">
+                <h2 class="font-black text-xl text-white">@Alex_Fit</h2>
+                <span id="profileRankBadge" class="text-[10px] font-black px-2 py-0.5 rounded-md bg-slate-700 text-slate-200 border border-slate-600">SILVER</span>
+              </div>
+              <p class="text-xs text-slate-400 font-bold">Athlete ID: <span class="text-arcade-green font-mono">#FIT-7749</span></p>
+
+              <div class="mt-2.5 space-y-1">
+                <div class="flex justify-between text-[11px] font-bold">
+                  <span class="text-slate-300">Level Progression</span>
+                  <span class="text-arcade-green"><span id="profileCurrentRp">850</span> RP</span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-950 rounded-full border border-slate-700 overflow-hidden">
+                  <div id="profileRpProgressBar" class="h-full bg-arcade-green rounded-full" style="width: 56.6%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- My Unique Player QR Card -->
+        <div class="bg-white p-4 rounded-3xl border-4 border-slate-900 shadow-arcade space-y-3">
+          <div class="flex justify-between items-center">
+            <div>
+              <h3 class="font-black text-slate-900 text-sm flex items-center gap-1.5">
+                <i class="fa-solid fa-qrcode text-arcade-green"></i> MY UNIQUE PLAYER QR
+              </h3>
+              <p class="text-xs text-slate-500 font-bold">Show this QR to teammates to join their squad</p>
+            </div>
+            <button onclick="openPlayerQrModal()" class="px-3 py-1.5 bg-slate-900 text-white font-black text-xs rounded-xl border-2 border-slate-900 shadow-arcade-sm active:translate-y-0.5 flex items-center gap-1">
+              <i class="fa-solid fa-expand"></i> ENLARGE
+            </button>
+          </div>
+
+          <div class="flex items-center gap-4 bg-slate-50 p-3 rounded-2xl border-2 border-slate-900">
+            <!-- Rendered SVG QR code -->
+            <div class="w-20 h-20 bg-white border-2 border-slate-900 p-1 rounded-xl flex items-center justify-center shrink-0">
+              <svg viewBox="0 0 100 100" class="w-full h-full text-slate-900 fill-current">
+                <rect x="0" y="0" width="30" height="30" />
+                <rect x="5" y="5" width="20" height="20" fill="white" />
+                <rect x="10" y="10" width="10" height="10" />
+                <rect x="70" y="0" width="30" height="30" />
+                <rect x="75" y="5" width="20" height="20" fill="white" />
+                <rect x="80" y="10" width="10" height="10" />
+                <rect x="0" y="70" width="30" height="30" />
+                <rect x="5" y="75" width="20" height="20" fill="white" />
+                <rect x="10" y="80" width="10" height="10" />
+                <rect x="40" y="10" width="15" height="15" />
+                <rect x="40" y="40" width="20" height="20" />
+                <rect x="70" y="45" width="15" height="25" />
+                <rect x="20" y="40" width="10" height="15" />
+                <rect x="70" y="80" width="20" height="15" />
+              </svg>
+            </div>
+
+            <div class="space-y-1">
+              <div class="text-xs font-black text-slate-900">MEMBER CODE: <span class="text-arcade-green font-mono">FIT-7749</span></div>
+              <p class="text-[11px] text-slate-500 font-semibold">Grants squad captains dynamic RP multipliers when scanned</p>
+              <span class="inline-block px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-black rounded border border-emerald-300">READY TO SCAN</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lifetime Stats Grid -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-white p-3.5 rounded-2xl border-4 border-slate-900 shadow-arcade space-y-1">
+            <span class="text-[11px] font-bold text-slate-500">TOTAL SCANS</span>
+            <div id="statTotalScans" class="text-2xl font-black text-slate-900">28</div>
+          </div>
+          <div class="bg-white p-3.5 rounded-2xl border-4 border-slate-900 shadow-arcade space-y-1">
+            <span class="text-[11px] font-bold text-slate-500">ACTIVE STREAK</span>
+            <div id="statStreakDays" class="text-2xl font-black text-orange-500">5 Days</div>
+          </div>
+          <div class="bg-white p-3.5 rounded-2xl border-4 border-slate-900 shadow-arcade space-y-1">
+            <span class="text-[11px] font-bold text-slate-500">LIFETIME XP</span>
+            <div id="statLifetimeXp" class="text-2xl font-black text-arcade-yellow">2,450</div>
+          </div>
+          <div class="bg-white p-3.5 rounded-2xl border-4 border-slate-900 shadow-arcade space-y-1">
+            <span class="text-[11px] font-bold text-slate-500">CURRENT RP</span>
+            <div id="statCurrentRp" class="text-2xl font-black text-arcade-green">850</div>
+          </div>
+        </div>
+
+        <!-- Activity History Log Timeline -->
+        <div class="bg-white p-4 rounded-3xl border-4 border-slate-900 shadow-arcade space-y-3">
+          <div class="flex justify-between items-center">
+            <h3 class="font-black text-slate-900 text-base flex items-center gap-2">
+              <i class="fa-solid fa-clock-rotate-left text-arcade-blue"></i> ACTIVITY HISTORY LOG
+            </h3>
+            <span class="text-xs font-bold text-slate-400" id="activityHistoryCount">5 Entries</span>
+          </div>
+
+          <div class="space-y-2.5" id="activityHistoryTimeline">
+            <!-- Activities rendered via JS -->
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- TAB 5: RANK LADDER & SOCIAL FLEX CARD                    -->
+      <!-- ======================================================== -->
+      <section id="tab-rank" class="hidden p-4 space-y-4">
+        <!-- Rank Ladder Header -->
+        <div class="bg-white p-4 rounded-2xl border-4 border-slate-900 shadow-arcade flex items-center justify-between">
+          <div>
+            <h2 class="font-black text-slate-900 text-lg">RANK PROGRESSION</h2>
+            <p class="text-xs text-slate-500 font-bold">Season 1 • Resets in 42 Days</p>
+          </div>
+          <button onclick="generateFlexCard()" class="px-3 py-2 bg-arcade-coral text-white font-black text-xs rounded-xl border-2 border-slate-900 shadow-arcade-sm active:translate-y-0.5 flex items-center gap-1.5">
+            <i class="fa-solid fa-share-nodes"></i> FLEX CARD
+          </button>
+        </div>
+
+        <!-- Rank Progression Ladder List -->
+        <div class="space-y-3" id="rankLadderContainer">
+          <!-- Rendered via JS -->
+        </div>
+
+        <!-- Shareable Flex Story Card Section -->
+        <div id="flexCardSection" class="hidden bg-slate-900 p-4 rounded-3xl border-4 border-slate-900 shadow-arcade space-y-3 text-white">
+          <div class="flex justify-between items-center">
+            <h3 class="font-black text-sm text-arcade-yellow flex items-center gap-1">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> SOCIAL BRAG STORY CARD
+            </h3>
+            <button onclick="closeFlexCard()" class="text-slate-400 text-xs hover:text-white font-bold">CLOSE</button>
+          </div>
+
+          <div class="flex justify-center bg-slate-950 p-2 rounded-2xl border-2 border-slate-800">
+            <canvas id="flexCanvas" width="360" height="640" class="w-full max-w-[280px] h-auto rounded-xl shadow-lg border border-slate-700"></canvas>
+          </div>
+
+          <button onclick="downloadFlexCard()" class="w-full py-3 bg-arcade-yellow text-slate-900 font-black text-sm rounded-xl border-2 border-slate-900 shadow-arcade-sm active:translate-y-0.5 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-download"></i> DOWNLOAD STORY PNG
+          </button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ======================================================== -->
+    <!-- BOTTOM NAVIGATION BAR WITH ICON-ONLY CENTER FLOATING QR  -->
+    <!-- ======================================================== -->
+    <nav class="absolute bottom-0 left-0 right-0 bg-white border-t-4 border-slate-900 px-2 py-2 flex justify-around items-center z-30 shadow-lg">
+      
+      <!-- Nav 1: Home/Hub -->
+      <button onclick="switchTab('hub')" id="nav-hub" class="nav-btn flex flex-col items-center text-arcade-green font-black">
+        <div class="w-9 h-6 rounded-xl flex items-center justify-center text-lg">
+          <i class="fa-solid fa-house"></i>
+        </div>
+        <span class="text-[10px] tracking-tight">HOME</span>
+      </button>
+
+      <!-- Nav 2: Network Library -->
+      <button onclick="switchTab('network')" id="nav-network" class="nav-btn flex flex-col items-center text-slate-400 font-black">
+        <div class="w-9 h-6 rounded-xl flex items-center justify-center text-lg">
+          <i class="fa-solid fa-building-circle-check"></i>
+        </div>
+        <span class="text-[10px] tracking-tight">VENUES</span>
+      </button>
+
+      <!-- CENTER FLOATING ACTION BUTTON: ICON ONLY (NO TEXT LABEL) -->
+      <button onclick="openScannerModal()" class="relative -mt-6 flex items-center justify-center group">
+        <div class="w-14 h-14 bg-arcade-green group-hover:bg-emerald-400 text-slate-900 rounded-full border-4 border-slate-900 shadow-arcade-lg flex items-center justify-center font-black text-2xl transform active:translate-y-1 transition-all">
+          <i class="fa-solid fa-qrcode group-hover:scale-110 transition-transform"></i>
+        </div>
+      </button>
+
+      <!-- Nav 3: Squad Lobby -->
+      <button onclick="switchTab('squad')" id="nav-squad" class="nav-btn flex flex-col items-center text-slate-400 font-black">
+        <div class="w-9 h-6 rounded-xl flex items-center justify-center text-lg">
+          <i class="fa-solid fa-users"></i>
+        </div>
+        <span class="text-[10px] tracking-tight">SQUAD</span>
+      </button>
+
+      <!-- Nav 4: Profile & History -->
+      <button onclick="switchTab('profile')" id="nav-profile" class="nav-btn flex flex-col items-center text-slate-400 font-black">
+        <div class="w-9 h-6 rounded-xl flex items-center justify-center text-lg">
+          <i class="fa-solid fa-user"></i>
+        </div>
+        <span class="text-[10px] tracking-tight">PROFILE</span>
+      </button>
+
+    </nav>
+
+    <!-- ======================================================== -->
+    <!-- FULLSCREEN ENTRANCE QR SCANNER MODAL                     -->
+    <!-- ======================================================== -->
+    <div id="scannerModal" class="hidden fixed inset-0 z-50 bg-slate-900/90 backdrop-blur-md flex flex-col justify-between p-4 text-white">
+      <!-- Modal Header -->
+      <div class="flex justify-between items-center z-10">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-qrcode text-arcade-green text-xl"></i>
+          <span class="font-black text-lg">ENTRANCE QR SCANNER</span>
+        </div>
+        <button onclick="closeScannerModal()" class="w-9 h-9 rounded-full bg-slate-800 text-slate-300 font-black border border-slate-700 flex items-center justify-center text-sm">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Scanner Camera Frame -->
+      <div class="flex-1 flex flex-col items-center justify-center relative my-2">
+        <div class="w-64 h-64 border-4 border-arcade-green rounded-3xl relative overflow-hidden bg-slate-950/80 shadow-arcade-glow flex items-center justify-center">
+          <div class="laser-line absolute left-0 right-0"></div>
+
+          <div class="text-center p-4 space-y-2">
+            <i class="fa-solid fa-expand text-5xl text-slate-600 animate-pulse"></i>
+            <p class="text-xs font-bold text-slate-400">Point camera at venue entrance QR</p>
+          </div>
+        </div>
+
+        <!-- Location GPS Lock status -->
+        <div class="mt-3 bg-slate-800 border border-emerald-500/50 text-emerald-400 px-3.5 py-1.5 rounded-full text-xs font-bold flex items-center gap-2">
+          <i class="fa-solid fa-location-dot text-arcade-green"></i>
+          <span>GPS Geofence: VERIFIED (&lt;15m)</span>
+        </div>
+      </div>
+
+      <!-- Active Squad Multiplier Banner & Preset Buttons -->
+      <div class="bg-slate-800 p-4 rounded-3xl border-2 border-slate-700 space-y-3 z-10">
+        <div class="flex justify-between items-center text-xs font-bold">
+          <span class="text-slate-300">ACTIVE SQUAD MULTIPLIER:</span>
+          <span id="entranceSquadMultLabel" class="text-arcade-yellow font-black">1.0x SOLO</span>
+        </div>
+
+        <!-- Quick Scan Preset Buttons -->
+        <div>
+          <span class="text-[11px] text-slate-400 font-bold mb-1.5 block">SIMULATE ENTRANCE SCAN:</span>
+          <div class="grid grid-cols-2 gap-2" id="scannerPresetButtons">
+            <!-- Dynamically populated from venue network -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TEAMMATE PLAYER QR SCANNER MODAL                         -->
+    <!-- ======================================================== -->
+    <div id="teammateScannerModal" class="hidden fixed inset-0 z-50 bg-slate-900/90 backdrop-blur-md flex flex-col justify-between p-4 text-white">
+      <div class="flex justify-between items-center z-10">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-users text-arcade-purple text-xl"></i>
+          <span class="font-black text-lg">SCAN TEAMMATE QR</span>
+        </div>
+        <button onclick="closeTeammateScannerModal()" class="w-9 h-9 rounded-full bg-slate-800 text-slate-300 font-black border border-slate-700 flex items-center justify-center text-sm">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="flex-1 flex flex-col items-center justify-center relative my-2">
+        <div class="w-64 h-64 border-4 border-arcade-purple rounded-3xl relative overflow-hidden bg-slate-950/80 shadow-lg flex items-center justify-center">
+          <div class="laser-line absolute left-0 right-0"></div>
+          <div class="text-center p-4 space-y-2">
+            <i class="fa-solid fa-user-plus text-5xl text-purple-500/50 animate-pulse"></i>
+            <p class="text-xs font-bold text-slate-400">Scan friend's Profile QR code</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-slate-800 p-4 rounded-3xl border-2 border-slate-700 space-y-2 z-10">
+        <span class="text-xs font-bold text-slate-300 block">QUICK TEST TEAMMATE SCANS:</span>
+        <div class="grid grid-cols-1 gap-2" id="teammateModalPresetButtons">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ENLARGE PLAYER QR MODAL -->
+    <div id="playerQrModal" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-white w-full max-w-sm rounded-3xl border-4 border-slate-900 p-6 shadow-arcade space-y-4 text-center">
+        <div class="flex justify-between items-center">
+          <h3 class="font-black text-slate-900 text-base">MY UNIQUE PLAYER QR</h3>
+          <button onclick="closePlayerQrModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="p-4 bg-slate-50 border-4 border-slate-900 rounded-2xl inline-block">
+          <svg viewBox="0 0 100 100" class="w-48 h-48 text-slate-900 fill-current">
+            <rect x="0" y="0" width="30" height="30" />
+            <rect x="5" y="5" width="20" height="20" fill="white" />
+            <rect x="10" y="10" width="10" height="10" />
+            <rect x="70" y="0" width="30" height="30" />
+            <rect x="75" y="5" width="20" height="20" fill="white" />
+            <rect x="80" y="10" width="10" height="10" />
+            <rect x="0" y="70" width="30" height="30" />
+            <rect x="5" y="75" width="20" height="20" fill="white" />
+            <rect x="10" y="80" width="10" height="10" />
+            <rect x="40" y="10" width="15" height="15" />
+            <rect x="40" y="40" width="20" height="20" />
+            <rect x="70" y="45" width="15" height="25" />
+            <rect x="20" y="40" width="10" height="15" />
+            <rect x="70" y="80" width="20" height="15" />
+          </svg>
+        </div>
+
+        <div>
+          <div class="font-black text-slate-900 text-lg">@Alex_Fit</div>
+          <p class="text-xs font-bold text-arcade-green font-mono">ID: #FIT-7749</p>
+        </div>
+
+        <p class="text-xs text-slate-500 font-semibold">Show this screen to your squad captain to get added into a team!</p>
+      </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="fixed top-16 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-xs pointer-events-none space-y-2">
+      <!-- Dynamic Toasts Inject Here -->
+    </div>
+
+  </div>
+
+  <!-- JavaScript Core Engine -->
+  <script>
+    /* ===================================================================
+       1. WEB AUDIO SYNTHESIZER
+       =================================================================== */
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playTone(freq, type, duration, delay = 0) {
+      setTimeout(() => {
+        try {
+          if (audioCtx.state === 'suspended') audioCtx.resume();
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + duration);
+        } catch (e) { console.log(e); }
+      }, delay);
+    }
+
+    function soundScanSuccess() {
+      playTone(523.25, 'sine', 0.12, 0);   // C5
+      playTone(659.25, 'sine', 0.12, 80);  // E5
+      playTone(783.99, 'sine', 0.25, 160); // G5
+    }
+
+    function soundRankUp() {
+      const notes = [440, 554.37, 659.25, 880, 1046.5]; 
+      notes.forEach((freq, idx) => {
+        playTone(freq, 'triangle', 0.25, idx * 90);
+      });
+    }
+
+    function soundClick() {
+      playTone(400, 'sine', 0.05, 0);
+    }
+
+    /* ===================================================================
+       2. RANKS DATA MODEL (FEATURING GOAT STATUS)
+       =================================================================== */
+    const RANKS = [
+      { name: "Bronze", threshold: 0, icon: "fa-shield-halved", color: "from-amber-700 to-amber-900" },
+      { name: "Silver", threshold: 500, icon: "fa-shield", color: "from-slate-400 to-slate-600" },
+      { name: "Gold", threshold: 1500, icon: "fa-crown", color: "from-yellow-400 to-amber-500" },
+      { name: "Platinum", threshold: 3500, icon: "fa-gem", color: "from-cyan-400 to-blue-600" },
+      { name: "Diamond", threshold: 7000, icon: "fa-diamond", color: "from-purple-500 to-indigo-600" },
+      { name: "GOAT Status", threshold: 12000, icon: "fa-dragon", color: "goat-rainbow-aura" }
+    ];
+
+    /* ===================================================================
+       3. VENUE NETWORK LIBRARY DATA
+       =================================================================== */
+    const NETWORK_VENUES = [
+      { id: 1, name: "Central Community Park", category: "park", categoryLabel: "PARK", icon: "fa-tree", distance: "0.3 km", activePlayers: 14, rpReward: 100, desc: "400m Jogging track, calisthenics area & entrance QR plaque" },
+      { id: 2, name: "SmashZone Badminton Arena", category: "badminton", categoryLabel: "BADMINTON", icon: "fa-table-tennis-paddle-ball", distance: "1.2 km", activePlayers: 22, rpReward: 150, desc: "8 Indoor wooden courts, entrance & court QR scanners" },
+      { id: 3, name: "Dink & Volley Pickleball Club", category: "pickleball", categoryLabel: "PICKLEBALL", icon: "fa-baseball-bat-ball", distance: "2.1 km", activePlayers: 18, rpReward: 150, desc: "6 Dedicated outdoor pickleball courts with match tracking" },
+      { id: 4, name: "Metro Power Gym", category: "gym", categoryLabel: "GYM", icon: "fa-dumbbell", distance: "0.8 km", activePlayers: 31, rpReward: 120, desc: "Full strength floor, cardio zone & turnstile QR kiosk" },
+      { id: 5, name: "Lakeside Badminton Center", category: "badminton", categoryLabel: "BADMINTON", icon: "fa-table-tennis-paddle-ball", distance: "3.4 km", activePlayers: 11, rpReward: 130, desc: "Community courts with active weekend ladder matches" },
+      { id: 6, name: "Sunset Park Trail", category: "park", categoryLabel: "PARK", icon: "fa-person-running", distance: "1.5 km", activePlayers: 9, rpReward: 100, desc: "Nature trail loop with check-in checkpoint poles" }
+    ];
+
+    const AVAILABLE_FRIENDS = [
+      { id: "FIT-9012", name: "@Marcus_Smash", role: "Badminton Pro" },
+      { id: "FIT-3341", name: "@Elena_Runner", role: "5K Specialist" },
+      { id: "FIT-8820", name: "@David_Pickle", role: "Dink Master" }
+    ];
+
+    let state = {
+      user: {
+        name: "@Alex_Fit",
+        id: "#FIT-7749",
+        rp: 850,
+        xp: 2450,
+        level: 14,
+        streak: 5,
+        totalScans: 28,
+        isPassActive: false,
+        rankIdx: 1 // Silver
+      },
+      squad: [
+        { name: "@Alex_Fit (You)", role: "Captain", id: "#FIT-7749" }
+      ],
+      workout: { active: false, seconds: 0, timerId: null },
+      selectedVenue: NETWORK_VENUES[0],
+      dashCategory: 'all',
+      activityHistory: [
+        { id: 101, venue: "SmashZone Badminton Arena", categoryLabel: "BADMINTON", rp: 188, squadCount: 2, squadMult: 1.25, date: "Today, 10:15 AM" },
+        { id: 102, venue: "Central Community Park", categoryLabel: "PARK", rp: 100, squadCount: 1, squadMult: 1.0, date: "Yesterday, 6:30 PM" },
+        { id: 103, venue: "Metro Power Gym", categoryLabel: "GYM", rp: 120, squadCount: 1, squadMult: 1.0, date: "16 Oct, 8:00 AM" },
+        { id: 104, venue: "Dink & Volley Pickleball Club", categoryLabel: "PICKLEBALL", rp: 225, squadCount: 4, squadMult: 1.5, date: "14 Oct, 5:45 PM" }
+      ]
+    };
+
+    function loadSavedState() {
+      const saved = localStorage.getItem('fitrank_touchup_state');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          state.user = { ...state.user, ...parsed.user };
+          if (parsed.activityHistory) state.activityHistory = parsed.activityHistory;
+        } catch(e) {}
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem('fitrank_touchup_state', JSON.stringify({
+        user: state.user,
+        activityHistory: state.activityHistory
+      }));
+    }
+
+    /* ===================================================================
+       4. INITIALIZATION & UI RENDERERS
+       =================================================================== */
+    function initApp() {
+      loadSavedState();
+      updateUserRank();
+      renderHub();
+      renderDashVenues();
+      renderFullNetworkList();
+      renderSquadLobby();
+      renderProfileView();
+      renderRankLadder();
+      renderStreakDays();
+      renderScannerPresets();
+    }
+
+    function switchTab(tabId) {
+      soundClick();
+      ['hub', 'network', 'squad', 'profile', 'rank'].forEach(t => {
+        const el = document.getElementById(`tab-${t}`);
+        if (el) el.classList.add('hidden');
+        const btn = document.getElementById(`nav-${t}`);
+        if (btn) {
+          btn.classList.remove('text-arcade-green');
+          btn.classList.add('text-slate-400');
+        }
+      });
+
+      const target = document.getElementById(`tab-${tabId}`);
+      if (target) target.classList.remove('hidden');
+
+      const activeBtn = document.getElementById(`nav-${tabId}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('text-slate-400');
+        activeBtn.classList.add('text-arcade-green');
+      }
+    }
+
+    function updateUserRank() {
+      let currentIdx = 0;
+      for (let i = RANKS.length - 1; i >= 0; i--) {
+        if (state.user.rp >= RANKS[i].threshold) {
+          currentIdx = i;
+          break;
+        }
+      }
+      state.user.rankIdx = currentIdx;
+    }
+
+    function getSquadMultiplier() {
+      const count = state.squad.length;
+      if (count === 1) return { mult: 1.0, label: "1.0x SOLO" };
+      if (count === 2) return { mult: 1.25, label: "1.25x DUO BOOST" };
+      if (count === 3) return { mult: 1.35, label: "1.35x TRIO BOOST" };
+      return { mult: 1.50, label: "1.50x SQUAD BOOST" };
+    }
+
+    function renderHub() {
+      const currentRank = RANKS[state.user.rankIdx];
+      const nextRank = RANKS[Math.min(state.user.rankIdx + 1, RANKS.length - 1)];
+
+      document.getElementById('userNameText').innerText = state.user.name;
+      document.getElementById('rankBadgePill').innerText = currentRank.name.toUpperCase();
+      document.getElementById('currentRpText').innerText = state.user.rp;
+      document.getElementById('nextRankRpText').innerText = state.user.rankIdx === RANKS.length - 1 ? 'MAX' : nextRank.threshold;
+      document.getElementById('streakCountText').innerText = `${state.user.streak} DAY STREAK!`;
+
+      const sqInfo = getSquadMultiplier();
+      document.getElementById('dashSquadMultText').innerText = sqInfo.label;
+
+      // Progress bar percentage calculation
+      const min = currentRank.threshold;
+      const max = nextRank.threshold;
+      const pct = max === min ? 100 : Math.min(100, Math.max(0, ((state.user.rp - min) / (max - min)) * 100));
+      document.getElementById('rpProgressBar').style.width = `${pct}%`;
+
+      // Emblem styling
+      const emblem = document.getElementById('rankEmblemBg');
+      if (currentRank.name === "GOAT Status") {
+        emblem.className = `w-20 h-20 rounded-2xl ${currentRank.color} border-4 border-slate-900 shadow-goat-glow flex items-center justify-center text-3xl text-white animate-pulse`;
+      } else {
+        emblem.className = `w-20 h-20 rounded-2xl bg-gradient-to-br ${currentRank.color} border-4 border-slate-900 shadow-arcade-sm flex items-center justify-center text-3xl text-white`;
+      }
+
+      document.getElementById('rankIcon').className = `fa-solid ${currentRank.icon}`;
+      document.getElementById('bgRankIcon').className = `fa-solid ${currentRank.icon}`;
+
+      // FitRank Pass Styling
+      const cardWrapper = document.getElementById('rankCardWrapper');
+      const passBadge = document.getElementById('passMultiplierBadge');
+      const passText = document.getElementById('passStatusText');
+      const passBtn = document.getElementById('passToggleBtn');
+
+      if (state.user.isPassActive) {
+        cardWrapper.classList.add('pass-rainbow-border');
+        passBadge.classList.remove('hidden');
+        passText.innerText = "PASS ACTIVE";
+        passBtn.className = "px-3 py-1 rounded-full text-xs font-black border-2 border-slate-900 transition-all flex items-center gap-1.5 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 shadow-arcade-sm";
+      } else {
+        cardWrapper.classList.remove('pass-rainbow-border');
+        passBadge.classList.add('hidden');
+        passText.innerText = "PASS OFF";
+        passBtn.className = "px-3 py-1 rounded-full text-xs font-black border-2 border-slate-900 transition-all flex items-center gap-1.5 bg-slate-800 text-slate-300";
+      }
+    }
+
+    function renderStreakDays() {
+      const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+      const container = document.getElementById('streakDaysContainer');
+      container.innerHTML = days.map((day, i) => {
+        const isDone = i < state.user.streak;
+        return `
+          <div class="flex flex-col items-center">
+            <div class="w-6 h-6 rounded-lg font-black text-[10px] flex items-center justify-center border ${isDone ? 'bg-arcade-green text-slate-900 border-slate-900' : 'bg-slate-100 text-slate-400 border-slate-300'}">
+              ${isDone ? '✓' : day}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    /* ===================================================================
+       5. SQUAD LOBBY & TEAMMATE SCANNER ENGINE
+       =================================================================== */
+    function renderSquadLobby() {
+      const count = state.squad.length;
+      const sqInfo = getSquadMultiplier();
+
+      document.getElementById('squadMultiplierBadge').innerText = sqInfo.label;
+      document.getElementById('squadBoostLabel').innerText = `${sqInfo.mult}x Multiplier Active`;
+      document.getElementById('squadCountText').innerText = `${count}/4`;
+
+      // Highlight multiplier steps
+      for (let i = 1; i <= 4; i++) {
+        const step = document.getElementById(`boostStep-${i}`);
+        if (i === count) {
+          step.className = "p-2 rounded-xl bg-arcade-green text-slate-900 border-2 border-slate-900 font-black shadow-sm";
+        } else if (i < count) {
+          step.className = "p-2 rounded-xl bg-emerald-900/60 text-emerald-300 border-2 border-emerald-700 font-bold";
+        } else {
+          step.className = "p-2 rounded-xl bg-slate-800 text-slate-400 border-2 border-slate-700 font-bold";
+        }
+      }
+
+      // Member list
+      const memberContainer = document.getElementById('squadMemberList');
+      memberContainer.innerHTML = state.squad.map((m, idx) => `
+        <div class="p-3 bg-slate-50 rounded-2xl border-2 border-slate-900 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-slate-900 text-arcade-green font-black flex items-center justify-center border-2 border-slate-900">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <div>
+              <div class="font-black text-xs text-slate-900">${m.name}</div>
+              <div class="text-[10px] text-slate-500 font-bold">${m.role} • <span class="font-mono text-arcade-green">${m.id}</span></div>
+            </div>
+          </div>
+          ${idx === 0 ? '<span class="text-[10px] font-black px-2 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-300">CAPTAIN</span>' : `
+            <button onclick="removeSquadMember(${idx})" class="text-xs text-slate-400 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
+          `}
+        </div>
+      `).join('');
+
+      // Quick Teammate scan simulation buttons
+      const quickContainer = document.getElementById('quickTeammateScanButtons');
+      const teammateModalPresets = document.getElementById('teammateModalPresetButtons');
+      
+      const buttonsHtml = AVAILABLE_FRIENDS.map(f => {
+        const alreadyIn = state.squad.some(m => m.id === f.id);
+        return `
+          <button onclick="scanTeammate('${f.name}', '${f.role}', '${f.id}')" ${alreadyIn ? 'disabled' : ''} class="p-2.5 rounded-xl text-left border-2 border-slate-900 flex items-center justify-between transition ${alreadyIn ? 'bg-slate-100 text-slate-400 opacity-60' : 'bg-slate-50 hover:bg-slate-100 text-slate-900 active:translate-y-0.5 shadow-arcade-sm'}">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-qrcode text-arcade-purple"></i>
+              <div>
+                <div class="font-black text-xs">${f.name}</div>
+                <div class="text-[10px] font-bold text-slate-500">${f.role} (${f.id})</div>
+              </div>
+            </div>
+            <span class="text-[10px] font-black px-2 py-1 rounded bg-arcade-purple text-white border border-slate-900">
+              ${alreadyIn ? 'IN SQUAD' : 'SIMULATE SCAN'}
+            </span>
+          </button>
+        `;
+      }).join('');
+
+      quickContainer.innerHTML = buttonsHtml;
+      if (teammateModalPresets) teammateModalPresets.innerHTML = buttonsHtml;
+    }
+
+    function openTeammateScannerModal() {
+      soundClick();
+      if (state.squad.length >= 4) {
+        showToast("Squad is already full (4/4 Players)!");
+        return;
+      }
+      document.getElementById('teammateScannerModal').classList.remove('hidden');
+    }
+
+    function closeTeammateScannerModal() {
+      document.getElementById('teammateScannerModal').classList.add('hidden');
+    }
+
+    function scanTeammate(name, role, id) {
+      if (state.squad.length >= 4) {
+        showToast("Squad Lobby Full (Max 4)");
+        return;
+      }
+      if (state.squad.some(m => m.id === id)) {
+        showToast(`${name} is already in squad!`);
+        return;
+      }
+
+      state.squad.push({ name, role, id });
+      closeTeammateScannerModal();
+
+      soundScanSuccess();
+      confettiBurst();
+      renderSquadLobby();
+      renderHub();
+
+      const sqInfo = getSquadMultiplier();
+      showToast(`Scanned ${name}! Squad Boost is now ${sqInfo.label}`);
+    }
+
+    function removeSquadMember(idx) {
+      soundClick();
+      const removed = state.squad[idx];
+      state.squad.splice(idx, 1);
+      renderSquadLobby();
+      renderHub();
+      showToast(`Removed ${removed.name} from Squad`);
+    }
+
+    function resetSquad() {
+      soundClick();
+      state.squad = [{ name: "@Alex_Fit (You)", role: "Captain", id: "#FIT-7749" }];
+      renderSquadLobby();
+      renderHub();
+      showToast("Squad reset to Solo");
+    }
+
+    /* ===================================================================
+       6. PROFILE & ACTIVITY HISTORY LOG
+       =================================================================== */
+    function renderProfileView() {
+      const currentRank = RANKS[state.user.rankIdx];
+
+      document.getElementById('profileRankBadge').innerText = currentRank.name.toUpperCase();
+      document.getElementById('profileCurrentRp').innerText = state.user.rp;
+
+      const min = currentRank.threshold;
+      const nextRank = RANKS[Math.min(state.user.rankIdx + 1, RANKS.length - 1)];
+      const max = nextRank.threshold;
+      const pct = max === min ? 100 : Math.min(100, Math.max(0, ((state.user.rp - min) / (max - min)) * 100));
+      document.getElementById('profileRpProgressBar').style.width = `${pct}%`;
+
+      const emblem = document.getElementById('profileRankEmblem');
+      if (currentRank.name === "GOAT Status") {
+        emblem.className = `w-20 h-20 rounded-2xl ${currentRank.color} border-4 border-slate-900 shadow-goat-glow flex items-center justify-center text-3xl text-white animate-pulse`;
+      } else {
+        emblem.className = `w-20 h-20 rounded-2xl bg-gradient-to-br ${currentRank.color} border-4 border-slate-900 shadow-arcade-sm flex items-center justify-center text-3xl text-white`;
+      }
+      document.getElementById('profileRankIcon').className = `fa-solid ${currentRank.icon}`;
+
+      // Stats
+      document.getElementById('statTotalScans').innerText = state.user.totalScans;
+      document.getElementById('statStreakDays').innerText = `${state.user.streak} Days`;
+      document.getElementById('statLifetimeXp').innerText = state.user.xp.toLocaleString();
+      document.getElementById('statCurrentRp').innerText = state.user.rp.toLocaleString();
+
+      // Timeline Log
+      const timeline = document.getElementById('activityHistoryTimeline');
+      document.getElementById('activityHistoryCount').innerText = `${state.activityHistory.length} Entries`;
+
+      timeline.innerHTML = state.activityHistory.map(item => `
+        <div class="p-3 bg-slate-50 rounded-2xl border-2 border-slate-900 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-slate-900 text-arcade-green flex items-center justify-center text-lg border-2 border-slate-900">
+              <i class="fa-solid fa-qrcode"></i>
+            </div>
+            <div>
+              <div class="font-black text-xs text-slate-900">${item.venue}</div>
+              <div class="flex items-center gap-1.5 mt-0.5">
+                <span class="text-[9px] font-black px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 border border-emerald-300">${item.categoryLabel}</span>
+                <span class="text-[10px] text-slate-500 font-bold">${item.date}</span>
+              </div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="font-black text-xs text-arcade-green">+${item.rp} RP</div>
+            <div class="text-[10px] font-black text-slate-500">${item.squadCount > 1 ? `👫 ${item.squadMult}x Squad` : '🧍 Solo'}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openPlayerQrModal() {
+      soundClick();
+      document.getElementById('playerQrModal').classList.remove('hidden');
+    }
+
+    function closePlayerQrModal() {
+      document.getElementById('playerQrModal').classList.add('hidden');
+    }
+
+    /* ===================================================================
+       7. VENUE DIRECTORY RENDERER
+       =================================================================== */
+    function filterDashVenues(category) {
+      soundClick();
+      state.dashCategory = category;
+      
+      document.querySelectorAll('.dash-cat-btn').forEach(btn => {
+        btn.className = "dash-cat-btn px-3 py-1 rounded-xl bg-slate-100 text-slate-700 font-bold border-2 border-slate-300";
+      });
+      event.target.className = "dash-cat-btn px-3 py-1 rounded-xl bg-slate-900 text-white font-black border-2 border-slate-900";
+      
+      renderDashVenues();
+    }
+
+    function renderDashVenues() {
+      const container = document.getElementById('dashVenueList');
+      const filtered = NETWORK_VENUES.filter(v => state.dashCategory === 'all' || v.category === state.dashCategory);
+
+      container.innerHTML = filtered.slice(0, 3).map(v => `
+        <div class="p-3 bg-slate-50 rounded-2xl border-2 border-slate-900 flex items-center justify-between hover:bg-slate-100 transition">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-xl bg-slate-900 text-white flex items-center justify-center text-lg border-2 border-slate-900 shadow-arcade-sm">
+              <i class="fa-solid ${v.icon} text-arcade-green"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="font-black text-xs text-slate-900">${v.name}</span>
+                <span class="text-[9px] font-black px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 border border-emerald-300">${v.categoryLabel}</span>
+              </div>
+              <p class="text-[11px] text-slate-500 font-bold mt-0.5">${v.distance} • ${v.activePlayers} athletes active</p>
+            </div>
+          </div>
+          <button onclick="openScannerModalWithVenueById(${v.id})" class="px-3 py-2 bg-arcade-green text-slate-900 font-black text-xs rounded-xl border-2 border-slate-900 shadow-arcade-sm active:translate-y-0.5 flex items-center gap-1">
+            <i class="fa-solid fa-qrcode"></i> SCAN
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function renderFullNetworkList() {
+      const container = document.getElementById('fullNetworkList');
+      const search = (document.getElementById('networkSearchInput')?.value || '').toLowerCase();
+      
+      const filtered = NETWORK_VENUES.filter(v => 
+        v.name.toLowerCase().includes(search) || 
+        v.categoryLabel.toLowerCase().includes(search) ||
+        v.desc.toLowerCase().includes(search)
+      );
+
+      container.innerHTML = filtered.map(v => `
+        <div class="p-4 bg-white rounded-2xl border-4 border-slate-900 shadow-arcade space-y-2">
+          <div class="flex justify-between items-start">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-slate-900 text-arcade-yellow flex items-center justify-center text-xl border-2 border-slate-900 shadow-arcade-sm">
+                <i class="fa-solid ${v.icon}"></i>
+              </div>
+              <div>
+                <h3 class="font-black text-slate-900 text-sm">${v.name}</h3>
+                <span class="text-[10px] font-black px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300">${v.categoryLabel}</span>
+              </div>
+            </div>
+            <span class="bg-amber-400 text-slate-900 text-xs font-black px-2.5 py-1 rounded-lg border border-slate-900 shadow-arcade-sm">
+              +${v.rpReward} RP
+            </span>
+          </div>
+
+          <p class="text-xs text-slate-600 font-semibold">${v.desc}</p>
+
+          <div class="flex justify-between items-center pt-2 border-t border-slate-100">
+            <span class="text-xs font-bold text-slate-500"><i class="fa-solid fa-location-dot text-slate-400"></i> ${v.distance} (${v.activePlayers} checked in)</span>
+            <button onclick="openScannerModalWithVenueById(${v.id})" class="px-4 py-2 bg-arcade-green text-slate-900 font-black text-xs rounded-xl border-2 border-slate-900 shadow-arcade-sm active:translate-y-0.5 flex items-center gap-1.5">
+              <i class="fa-solid fa-qrcode"></i> SCAN ENTRANCE
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleFitRankPass() {
+      soundClick();
+      state.user.isPassActive = !state.user.isPassActive;
+      saveState();
+      renderHub();
+      showToast(state.user.isPassActive ? "⚡ FitRank Pass Active! (1.25x Multiplier)" : "FitRank Pass Disabled");
+    }
+
+    /* ===================================================================
+       8. WORKOUT TIMER SYSTEM
+       =================================================================== */
+    function toggleWorkoutTimer() {
+      soundClick();
+      if (!state.workout.active) {
+        state.workout.active = true;
+        document.getElementById('timerToggleIcon').className = "fa-solid fa-pause";
+        state.workout.timerId = setInterval(() => {
+          state.workout.seconds++;
+          updateTimerDisplay();
+        }, 1000);
+        showToast("Workout Timer Started!");
+      } else {
+        state.workout.active = false;
+        clearInterval(state.workout.timerId);
+        document.getElementById('timerToggleIcon').className = "fa-solid fa-play";
+      }
+    }
+
+    function updateTimerDisplay() {
+      const hrs = Math.floor(state.workout.seconds / 3600).toString().padStart(2, '0');
+      const mins = Math.floor((state.workout.seconds % 3600) / 60).toString().padStart(2, '0');
+      const secs = (state.workout.seconds % 60).toString().padStart(2, '0');
+      document.getElementById('workoutTimerDisplay').innerText = `${hrs}:${mins}:${secs}`;
+      
+      const earnedRp = Math.floor(state.workout.seconds / 60) * 2;
+      document.getElementById('workoutEarnedRp').innerText = `+${earnedRp} RP`;
+    }
+
+    function finishWorkoutTimer() {
+      soundClick();
+      if (state.workout.seconds < 10) {
+        showToast("Session too short to claim RP");
+        return;
+      }
+      const earnedRp = Math.max(5, Math.floor(state.workout.seconds / 60) * 2);
+      addPoints(earnedRp, Math.floor(earnedRp * 1.5), "Active Timer Workout", "FITNESS");
+      
+      state.workout.active = false;
+      clearInterval(state.workout.timerId);
+      state.workout.seconds = 0;
+      updateTimerDisplay();
+      document.getElementById('timerToggleIcon').className = "fa-solid fa-play";
+
+      confettiBurst();
+      soundScanSuccess();
+      showToast(`Workout Claimed! +${earnedRp} RP Added`);
+    }
+
+    /* ===================================================================
+       9. ENTRANCE SCANNER & CHECK-IN ENGINE
+       =================================================================== */
+    function openScannerModal() {
+      soundClick();
+      const sqInfo = getSquadMultiplier();
+      document.getElementById('entranceSquadMultLabel').innerText = sqInfo.label;
+      document.getElementById('scannerModal').classList.remove('hidden');
+    }
+
+    function closeScannerModal() {
+      document.getElementById('scannerModal').classList.add('hidden');
+    }
+
+    function openScannerModalWithVenueById(venueId) {
+      const v = NETWORK_VENUES.find(item => item.id === venueId);
+      if (v) openScannerModalWithVenue(v);
+    }
+
+    function openScannerModalWithVenue(venue) {
+      state.selectedVenue = venue;
+      openScannerModal();
+    }
+
+    function renderScannerPresets() {
+      const container = document.getElementById('scannerPresetButtons');
+      container.innerHTML = NETWORK_VENUES.slice(0, 4).map(v => `
+        <button onclick="executeScan('${v.name}', ${v.rpReward}, '${v.categoryLabel}')" class="p-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-left border border-slate-600 flex items-center gap-2">
+          <i class="fa-solid ${v.icon} text-arcade-green"></i>
+          <div class="truncate">
+            <div class="text-xs font-bold text-white truncate">${v.name}</div>
+            <div class="text-[10px] text-amber-400 font-bold">+${v.rpReward} RP Scan</div>
+          </div>
+        </button>
+      `).join('');
+    }
+
+    function executeScan(venueName, baseRp, categoryLabel) {
+      closeScannerModal();
+      
+      const sqInfo = getSquadMultiplier();
+      let totalMultiplier = sqInfo.mult * (state.user.isPassActive ? 1.25 : 1.0);
+      let finalRp = Math.round(baseRp * totalMultiplier);
+      let finalXp = Math.round(finalRp * 1.5);
+
+      state.user.totalScans++;
+
+      // Log into Activity History
+      state.activityHistory.unshift({
+        id: Date.now(),
+        venue: venueName,
+        categoryLabel: categoryLabel || "VENUE",
+        rp: finalRp,
+        squadCount: state.squad.length,
+        squadMult: sqInfo.mult,
+        date: "Just now"
+      });
+
+      addPoints(finalRp, finalXp);
+
+      soundScanSuccess();
+      confettiBurst();
+      triggerScreenShake();
+
+      showToast(`Scanned Entrance at ${venueName}! +${finalRp} RP`);
+    }
+
+    function addPoints(rp, xp) {
+      const oldRankIdx = state.user.rankIdx;
+      state.user.rp += rp;
+      state.user.xp += xp;
+      
+      updateUserRank();
+      saveState();
+      renderHub();
+      renderProfileView();
+      renderRankLadder();
+
+      if (state.user.rankIdx > oldRankIdx) {
+        setTimeout(() => {
+          soundRankUp();
+          confettiBurst();
+          const newRankName = RANKS[state.user.rankIdx].name;
+          if (newRankName === "GOAT Status") {
+            showToast(`🔥 LEGENDARY! YOU UNLOCKED GOAT STATUS! 🐐`);
+          } else {
+            showToast(`🎉 RANK UP! You reached ${newRankName}!`);
+          }
+        }, 500);
+      }
+    }
+
+    /* ===================================================================
+       10. RANK PROGRESSION LADDER & GOAT STATUS FLEX GENERATOR
+       =================================================================== */
+    function renderRankLadder() {
+      const container = document.getElementById('rankLadderContainer');
+      container.innerHTML = RANKS.map((r, i) => {
+        const isCurrent = state.user.rankIdx === i;
+        const isUnlocked = state.user.rp >= r.threshold;
+
+        return `
+          <div class="p-3.5 rounded-2xl border-4 border-slate-900 shadow-arcade flex items-center justify-between transition-all ${isCurrent ? 'bg-slate-900 text-white scale-[1.02]' : isUnlocked ? 'bg-white text-slate-900' : 'bg-slate-100 text-slate-400 opacity-70'}">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl ${r.name === 'GOAT Status' ? 'goat-rainbow-aura animate-pulse' : 'bg-gradient-to-br ' + r.color} border-2 border-slate-900 flex items-center justify-center text-xl text-white shadow-arcade-sm">
+                <i class="fa-solid ${r.icon}"></i>
+              </div>
+              <div>
+                <div class="font-black text-sm flex items-center gap-2">
+                  ${r.name}
+                  ${isCurrent ? '<span class="text-[9px] bg-arcade-green text-slate-900 px-2 py-0.5 rounded font-black">CURRENT</span>' : ''}
+                </div>
+                <p class="text-xs font-bold ${isCurrent ? 'text-slate-400' : 'text-slate-500'}">${r.threshold} RP Required</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-xs font-black ${r.name === 'GOAT Status' ? 'text-pink-500' : ''}">${isUnlocked ? 'UNLOCKED' : 'LOCKED'}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function generateFlexCard() {
+      soundClick();
+      document.getElementById('flexCardSection').classList.remove('hidden');
+
+      const canvas = document.getElementById('flexCanvas');
+      const ctx = canvas.getContext('2d');
+      const currentRank = RANKS[state.user.rankIdx];
+
+      // Draw Card Background
+      const grad = ctx.createLinearGradient(0, 0, 0, 640);
+      grad.addColorStop(0, '#0F172A');
+      grad.addColorStop(1, '#022C22');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 360, 640);
+
+      // Header Brand
+      ctx.fillStyle = '#22C55E';
+      ctx.font = '900 24px Fredoka';
+      ctx.fillText('FITRANK', 30, 50);
+
+      ctx.fillStyle = '#94A3B8';
+      ctx.font = '700 12px Inter';
+      ctx.fillText('SEASON 1 ATHLETE PROFILE', 30, 68);
+
+      // Main Rank Frame
+      ctx.fillStyle = '#1E293B';
+      ctx.fillRect(30, 100, 300, 240);
+      ctx.strokeStyle = currentRank.name === 'GOAT Status' ? '#FF007A' : '#22C55E';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(30, 100, 300, 240);
+
+      // User Title
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '900 28px Fredoka';
+      ctx.textAlign = 'center';
+      ctx.fillText(state.user.name, 180, 160);
+
+      ctx.fillStyle = currentRank.name === 'GOAT Status' ? '#FF007A' : '#FFC048';
+      ctx.font = '900 24px Fredoka';
+      ctx.fillText(currentRank.name.toUpperCase(), 180, 195);
+
+      ctx.fillStyle = '#22C55E';
+      ctx.font = '700 16px Inter';
+      ctx.fillText(`${state.user.rp} SEASONAL RP`, 180, 230);
+
+      ctx.fillStyle = '#94A3B8';
+      ctx.font = '600 12px Inter';
+      ctx.fillText(`Top Athlete in Petaling Jaya`, 180, 260);
+
+      // Stats Highlights
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '900 18px Fredoka';
+      ctx.fillText(`🔥 ${state.user.streak} DAY STREAK`, 50, 400);
+      ctx.fillText(`⭐ ${state.user.xp} LIFETIME XP`, 50, 440);
+      ctx.fillText(`📱 ${state.user.totalScans} TOTAL SCANS`, 50, 480);
+
+      // Bottom Banner
+      ctx.fillStyle = '#22C55E';
+      ctx.fillRect(30, 530, 300, 60);
+      ctx.fillStyle = '#0F172A';
+      ctx.font = '900 14px Fredoka';
+      ctx.textAlign = 'center';
+      ctx.fillText('SCAN TO CHALLENGE MY RANK', 180, 565);
+    }
+
+    function closeFlexCard() {
+      document.getElementById('flexCardSection').classList.add('hidden');
+    }
+
+    function downloadFlexCard() {
+      const canvas = document.getElementById('flexCanvas');
+      const link = document.createElement('a');
+      link.download = `FitRank_${state.user.name}_Card.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      showToast("Rank Card Downloaded!");
+    }
+
+    /* ===================================================================
+       11. UTILITIES & TOAST ENGINE
+       =================================================================== */
+    function confettiBurst() {
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+      }
+    }
+
+    function triggerScreenShake() {
+      const app = document.getElementById('appContainer');
+      app.classList.add('shake-animation');
+      setTimeout(() => app.classList.remove('shake-animation'), 400);
+    }
+
+    function showToast(message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = "bg-slate-900 text-white font-bold text-xs px-4 py-2.5 rounded-2xl border-2 border-slate-700 shadow-2xl flex items-center gap-2 transform translate-y-[-10px] opacity-0 transition-all duration-300";
+      toast.innerHTML = `<i class="fa-solid fa-bolt text-arcade-green"></i> <span>${message}</span>`;
+      
+      container.appendChild(toast);
+      
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-[-10px]', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-[-10px]');
+        setTimeout(() => toast.remove(), 300);
+      }, 2500);
+    }
+
+    window.onload = function() {
+      initApp();
+    };
+  </script>
+</body>
+</html>
